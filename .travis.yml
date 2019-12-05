@@ -1,11 +1,11 @@
 language: perl
 perl:
     - "5.14"
-    - "5.28"
+    - "5.30"
 
 matrix:
     include:
-        - perl: "5.28"
+        - perl: "5.30"
           env: COVERAGE=1
     allow_failures:
         - perl: "blead"

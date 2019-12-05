@@ -1,0 +1,18 @@
+<table class="table">
+    <thead>
+        <tr>
+            % for my $column ( @$columns ) {
+                <th scope="col"><%= $column->{title} %></th>
+            % }
+        </tr>
+    </thead>
+    <tbody>
+        % for my $item ( @$items ) {
+        <tr>
+            % for my $column ( map { $_->{key} } @$columns ) {
+                <td><%= $item->{ $column } %></td>
+            % }
+        </tr>
+        % }
+    </tbody>
+</table>

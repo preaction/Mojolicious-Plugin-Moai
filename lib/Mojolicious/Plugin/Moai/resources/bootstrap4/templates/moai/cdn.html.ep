@@ -1,0 +1,2 @@
+%= include 'moai/cdn/stylesheet'
+%= include 'moai/cdn/javascript'
