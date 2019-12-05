@@ -1,0 +1,188 @@
+[![Build Status](https://travis-ci.org/preaction/Mojolicious-Plugin-Moai.svg?branch=master)](https://travis-ci.org/preaction/Mojolicious-Plugin-Moai)
+[![Coverage Status](https://coveralls.io/repos/preaction/Mojolicious-Plugin-Moai/badge.svg?branch=master)](https://coveralls.io/r/preaction/Mojolicious-Plugin-Moai?branch=master)
+
+# NAME
+
+Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
+
+# VERSION
+
+version 0.001
+
+# SYNOPSIS
+
+    use Mojolicious::Lite;
+    plugin Moai => 'Bootstrap4';
+    app->start;
+    __DATA__
+    @@ list.html.ep
+    %= include 'moai/cdn'
+    %= include 'moai/table', items => \@items, columns => [qw( id name )]
+    %= include 'moai/pager', current_page => 1, total_pages => 5
+
+# DESCRIPTION
+
+This plugin provides some common UI components using a couple different
+popular UI libraries.
+
+These components are designed to integrate seamlessly with [Yancy](https://metacpan.org/pod/Yancy),
+[Mojolicious::Plugin::DBIC](https://metacpan.org/pod/Mojolicious::Plugin::DBIC), and [Mojolicious::Plugin::SQL](https://metacpan.org/pod/Mojolicious::Plugin::SQL).
+
+# SUPPORTED LIBRARIES
+
+These libraries are not included and the desired version should be added
+to your layout templates. To add your library using a CDN, see
+["moai/cdn"](#moai-cdn), below.
+
+## Bootstrap4
+
+[http://getbootstrap.com](http://getbootstrap.com)
+
+# WIDGETS
+
+Widgets are snippets that you can include in your templates using the
+[include helper](https://metacpan.org/pod/Mojolicious::Guides::Rendering#Partial-templates).
+
+## moai/pager
+
+    <%= include 'moai/pager',
+        current_page => param( 'page' ),
+        total_pages => $total_pages,
+    %>
+
+A pagination control. Will display previous and next buttons along with
+individual page buttons.
+
+Also comes in a `mini` variant in `moai/pager/mini` that has just
+previous/next buttons.
+
+### Stash
+
+- current\_page
+
+    The current page number. Defaults to the value of the `page` parameter.
+
+- total\_pages
+
+    The total number of pages. Required.
+
+- page\_param
+
+    The name of the parameter to use for the current page. Defaults to `page`.
+
+## moai/table
+
+    <%= include 'moai/table',
+        items => [
+            { id => 1, name => 'Doug' },
+        ],
+        columns => [
+            { key => 'id', title => 'ID' },
+            { key => 'name', title => 'Name' },
+        ],
+    %>
+
+A table of items.
+
+### Stash
+
+- items
+
+    The items to display in the table. An arrayref of hashrefs.
+
+- columns
+
+    The columns to display, in order. An arrayref of hashrefs with the following
+    keys:
+
+    - key
+
+        The hash key in the item to use.
+
+    - title
+
+        The text to display in the column heading
+
+## moai/cdn
+
+    %= include 'moai/cdn', version => '4.1.0';
+
+Add the required stylesheet and JavaScript links for the current library
+using a CDN. The stylesheets and JavaScript can be added separately
+using `moai/cdn/stylesheet` and `moai/cdn/javascript` respectively.
+
+### Stash
+
+- version
+
+    The specific version of the library to use. Required.
+
+# TODO
+
+- Security
+
+    The CDN links should have full security hashes.
+
+- Accessibility Testing
+
+    Accessibility testing should be automated and applied to all supported
+    libraries.
+
+- Internationalization
+
+    This library should use Mojolicious's `variant` feature to provide
+    translations for every widget in every library.
+
+- Add more widgets
+
+    There should be widgets for...
+
+    - menus (vertical lists, horizontal navbars, dropdown buttons)
+    - switched panels (tabs, accordion, slider)
+    - alerts (error, warning, info)
+    - menus (dropdown button, menu bar)
+    - popups (modal dialogs, tooltips, notifications)
+    - grid (maybe...)
+
+- Add more libraries
+
+    There should be support for...
+
+    - Bootstrap 3
+    - Bulma
+    - Material
+
+    Moai should support the same features for each library, allowing easy
+    switching between them.
+
+- Add progressive enhancement
+
+    Some examples of progressive enhancement:
+
+    - The table widget could have sortable columns
+    - The table widget could use AJAX to to filter and paginate
+    - The pager widget could use AJAX to update a linked element
+    - The switched panel widgets could load their content lazily
+
+- Themes
+
+    Built-in selection of CDN-based themes for each library
+
+- Layouts
+
+    A customizable layout with good defaults.
+
+# SEE ALSO
+
+[Mojolicious::Guides::Rendering](https://metacpan.org/pod/Mojolicious::Guides::Rendering)
+
+# AUTHOR
+
+Doug Bell <preaction@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2019 by Doug Bell.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

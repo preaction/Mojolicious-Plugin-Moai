@@ -1,3 +1,7 @@
 Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
+
+    - Initial release
+    - Added initial table and pager widgets
+    - Added CDN widgets to quickly get up and running
