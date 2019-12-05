@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.001     2019-12-05 01:19:40-06:00 America/Chicago
+
     - Initial release
     - Added initial table and pager widgets
     - Added CDN widgets to quickly get up and running
