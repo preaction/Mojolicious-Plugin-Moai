@@ -2,6 +2,12 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+    [Fixed]
+
+    - Renamed 'cdn' widgets to 'lib'. This better indicates their
+      function and allows for more meaningful overriding (if one wants
+      to load libraries locally instead of from the CDN)
+
 0.001     2019-12-05 01:19:40-06:00 America/Chicago
 
     - Initial release

@@ -7,7 +7,7 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # SYNOPSIS
 
@@ -16,7 +16,7 @@ version 0.001
     app->start;
     __DATA__
     @@ list.html.ep
-    %= include 'moai/cdn'
+    %= include 'moai/lib'
     %= include 'moai/table', items => \@items, columns => [qw( id name )]
     %= include 'moai/pager', current_page => 1, total_pages => 5
 
@@ -32,7 +32,7 @@ These components are designed to integrate seamlessly with [Yancy](https://metac
 
 These libraries are not included and the desired version should be added
 to your layout templates. To add your library using a CDN, see
-["moai/cdn"](#moai-cdn), below.
+["moai/lib"](#moai-lib), below.
 
 ## Bootstrap4
 
@@ -103,13 +103,13 @@ A table of items.
 
         The text to display in the column heading
 
-## moai/cdn
+## moai/lib
 
-    %= include 'moai/cdn', version => '4.1.0';
+    %= include 'moai/lib', version => '4.1.0';
 
 Add the required stylesheet and JavaScript links for the current library
 using a CDN. The stylesheets and JavaScript can be added separately
-using `moai/cdn/stylesheet` and `moai/cdn/javascript` respectively.
+using `moai/lib/stylesheet` and `moai/lib/javascript` respectively.
 
 ### Stash
 
