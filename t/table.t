@@ -30,7 +30,7 @@ my $t = Test::Mojo->new( $app );
     { id => 3, name => 'Katie' },
 );
 @columns = (
-    { key => 'id', title => 'ID' },
+    { key => 'id', title => 'ID', class => { col => 'text-center' } },
     { key => 'name', title => 'Name' },
 );
 
@@ -40,12 +40,20 @@ $t->get_ok( '/?class=table:table-striped' )
   ->element_exists( 'thead', 'thead exists' )
   ->element_exists( 'thead tr:only-child', 'one thead row exists' )
   ->text_like( 'thead tr:nth-child(1) th:nth-child(1)', qr{^\s*$columns[0]{title}\s*$}, 'first column title' )
+  ->element_exists(
+      'thead tr:nth-child(1) th:nth-child(1).text-center',
+      'first column title has text-center class',
+  )
   ->text_like( 'thead tr:nth-child(1) th:nth-child(2)', qr{^\s*$columns[1]{title}\s*$}, 'second column title' )
   ->element_exists( 'tbody', 'tbody exists' )
   ->element_exists( 'tbody tr:nth-child(1)', 'first tbody row exists' )
   ->text_like(
       'tbody tr:nth-child(1) td:nth-child(1)', qr{^\s*$items[0]{id}\s*$},
       'first row first column data',
+  )
+  ->element_exists(
+      'tbody tr:nth-child(1) td:nth-child(1).text-center',
+      'first row first column has text-center class',
   )
   ->text_like(
       'tbody tr:nth-child(1) td:nth-child(2)', qr{^\s*$items[0]{name}\s*$},
@@ -56,6 +64,10 @@ $t->get_ok( '/?class=table:table-striped' )
       'tbody tr:nth-child(2) td:nth-child(1)', qr{^\s*$items[1]{id}\s*$},
       'second row first column data',
   )
+  ->element_exists(
+      'tbody tr:nth-child(2) td:nth-child(1).text-center',
+      'second row first column has text-center class',
+  )
   ->text_like(
       'tbody tr:nth-child(2) td:nth-child(2)', qr{^\s*$items[1]{name}\s*$},
       'second row second column data',
@@ -64,6 +76,10 @@ $t->get_ok( '/?class=table:table-striped' )
   ->text_like(
       'tbody tr:nth-child(3) td:nth-child(1)', qr{^\s*$items[2]{id}\s*$},
       'third row first column data',
+  )
+  ->element_exists(
+      'tbody tr:nth-child(3) td:nth-child(1).text-center',
+      'third row first column has text-center class',
   )
   ->text_like(
       'tbody tr:nth-child(3) td:nth-child(2)', qr{^\s*$items[2]{name}\s*$},

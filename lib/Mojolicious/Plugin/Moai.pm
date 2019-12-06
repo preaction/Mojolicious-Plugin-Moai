@@ -104,6 +104,16 @@ The hash key in the item to use.
 
 The text to display in the column heading
 
+=item class
+
+A hashref of additional classes to add to certain elements:
+
+=over
+
+=item * C<col> - Add these classes to every cell in the column
+
+=back
+
 =back
 
 =item class

@@ -11,15 +11,19 @@
     <thead class="<%= $classes{thead} %>">
         <tr>
             % for my $column ( @$columns ) {
-                <th scope="col"><%= $column->{title} %></th>
+                <th scope="col" class="<%= $column->{class}{col} // '' %>">
+                    <%= $column->{title} %>
+                </th>
             % }
         </tr>
     </thead>
     <tbody>
         % for my $item ( @$items ) {
         <tr>
-            % for my $column ( map { $_->{key} } @$columns ) {
-                <td><%= $item->{ $column } %></td>
+            % for my $column ( @$columns ) {
+                <td class="<%= $column->{class}{col} // '' %>">
+                    <%= $item->{ $column->{key} } %>
+                </td>
             % }
         </tr>
         % }
