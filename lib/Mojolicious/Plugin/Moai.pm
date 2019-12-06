@@ -1,5 +1,5 @@
 package Mojolicious::Plugin::Moai;
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 # ABSTRACT: Mojolicious UI components using modern UI libraries
 
 =head1 SYNOPSIS

@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.002     2019-12-06 10:25:11-06:00 America/Chicago
+
     [Fixed]
 
     - Renamed 'cdn' widgets to 'lib'. This better indicates their
