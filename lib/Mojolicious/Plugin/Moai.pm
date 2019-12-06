@@ -106,6 +106,20 @@ The text to display in the column heading
 
 =back
 
+=item class
+
+A hashref of additional classes to add to certain elements:
+
+=over
+
+=item * C<table>
+
+=item * C<thead>
+
+=item * C<wrapper> - Add a wrapper element with these classes
+
+=back
+
 =back
 
 =head2 moai/lib
@@ -204,6 +218,20 @@ Built-in selection of CDN-based themes for each library
 =item Layouts
 
 A customizable layout with good defaults.
+
+=item Extra Classes
+
+A standard way of adding extra classes to individual tags inside components. In addition
+to a string, we should also support a subref so that loops can apply classes to certain
+elements based on input criteria.
+
+=item Documentation Sheet
+
+Each supported library should come with a single page that demonstrates the various
+widgets and provides copy/paste code snippets to achieve that widget.
+
+It would be amazing if there was a way to make one template apply to all
+supported libraries.
 
 =back
 

@@ -18,6 +18,7 @@ $app->routes->get( '/' )->to( cb => sub {
     $c->stash(
         items => \@items,
         columns => \@columns,
+        class => { map { split /:/, $_ } @{ $c->every_param( 'class' ) || [] } },
     );
     $c->render( 'moai/table' );
 } );
@@ -33,8 +34,9 @@ my $t = Test::Mojo->new( $app );
     { key => 'name', title => 'Name' },
 );
 
-$t->get_ok( '/' )
-  ->element_exists( 'table', 'table exists' )
+$t->get_ok( '/?class=table:table-striped' )
+  ->element_exists( 'table.table', 'table exists' )
+  ->element_exists( 'table.table-striped', 'table-striped class added to table' )
   ->element_exists( 'thead', 'thead exists' )
   ->element_exists( 'thead tr:only-child', 'one thead row exists' )
   ->text_like( 'thead tr:nth-child(1) th:nth-child(1)', qr{^\s*$columns[0]{title}\s*$}, 'first column title' )
@@ -69,5 +71,11 @@ $t->get_ok( '/' )
   )
   ;
 
+$t->get_ok( '/?class=wrapper:table-responsive&class=table:table-hover&class=thead:thead-light' )
+  ->element_exists( 'table.table-hover', 'table-hover class added to table' )
+  ->element_exists( 'div > table', 'wrapper element added by wrapper class' )
+  ->element_exists( 'div.table-responsive > table', 'table-responsive class added to wrapper' )
+  ->element_exists( 'thead.thead-light', 'thead-light class added to thead' )
+  ;
 
 done_testing;
