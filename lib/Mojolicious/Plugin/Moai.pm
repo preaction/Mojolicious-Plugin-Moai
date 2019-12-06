@@ -9,7 +9,7 @@ our $VERSION = '0.002';
     app->start;
     __DATA__
     @@ list.html.ep
-    %= include 'moai/cdn'
+    %= include 'moai/lib'
     %= include 'moai/table', items => \@items, columns => [qw( id name )]
     %= include 'moai/pager', current_page => 1, total_pages => 5
 
@@ -25,7 +25,7 @@ L<Mojolicious::Plugin::DBIC>, and L<Mojolicious::Plugin::SQL>.
 
 These libraries are not included and the desired version should be added
 to your layout templates. To add your library using a CDN, see
-L</moai/cdn>, below.
+L</moai/lib>, below.
 
 =head2 Bootstrap4
 
@@ -108,13 +108,13 @@ The text to display in the column heading
 
 =back
 
-=head2 moai/cdn
+=head2 moai/lib
 
-    %= include 'moai/cdn', version => '4.1.0';
+    %= include 'moai/lib', version => '4.1.0';
 
 Add the required stylesheet and JavaScript links for the current library
 using a CDN. The stylesheets and JavaScript can be added separately
-using C<moai/cdn/stylesheet> and C<moai/cdn/javascript> respectively.
+using C<moai/lib/stylesheet> and C<moai/lib/javascript> respectively.
 
 =head3 Stash
 
