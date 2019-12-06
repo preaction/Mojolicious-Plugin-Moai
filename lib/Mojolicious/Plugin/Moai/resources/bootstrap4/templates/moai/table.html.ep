@@ -22,7 +22,11 @@
         <tr>
             % for my $column ( @$columns ) {
                 <td class="<%= $column->{class}{col} // '' %>">
+                    <% if ( my $route = $column->{link_to} ) { %>
+                        <a href="<%= url_for $route, $item %>">
+                    <% } %>
                     <%= $item->{ $column->{key} } %>
+                    <% if ( $column->{link_to} ) { %></a><% } %>
                 </td>
             % }
         </tr>

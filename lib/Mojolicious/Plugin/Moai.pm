@@ -104,6 +104,11 @@ The hash key in the item to use.
 
 The text to display in the column heading
 
+=item link_to
+
+Add a link to the given named route. The route will be filled in by the current
+item, like C<< url_for $link_to => $item >>.
+
 =item class
 
 A hashref of additional classes to add to certain elements:

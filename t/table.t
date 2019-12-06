@@ -13,6 +13,7 @@ use Mojolicious;
 my ( @items, @columns );
 my $app = Mojolicious->new;
 $app->plugin( Moai => [ 'Bootstrap4' ] );
+$app->routes->get( '/user/:id' )->name( 'user.profile' );
 $app->routes->get( '/' )->to( cb => sub {
     my ( $c ) = @_;
     $c->stash(
@@ -31,7 +32,7 @@ my $t = Test::Mojo->new( $app );
 );
 @columns = (
     { key => 'id', title => 'ID', class => { col => 'text-center' } },
-    { key => 'name', title => 'Name' },
+    { key => 'name', title => 'Name', link_to => 'user.profile' },
 );
 
 $t->get_ok( '/?class=table:table-striped' )
@@ -56,8 +57,12 @@ $t->get_ok( '/?class=table:table-striped' )
       'first row first column has text-center class',
   )
   ->text_like(
-      'tbody tr:nth-child(1) td:nth-child(2)', qr{^\s*$items[0]{name}\s*$},
+      'tbody tr:nth-child(1) td:nth-child(2) > :first-child', qr{^\s*$items[0]{name}\s*$},
       'first row second column data',
+  )
+  ->element_exists(
+      'tbody tr:nth-child(1) td:nth-child(2) a[href=/user/1]',
+      'first row second column has correct link',
   )
   ->element_exists( 'tbody tr:nth-child(2)', 'second tbody row exists' )
   ->text_like(
@@ -69,8 +74,12 @@ $t->get_ok( '/?class=table:table-striped' )
       'second row first column has text-center class',
   )
   ->text_like(
-      'tbody tr:nth-child(2) td:nth-child(2)', qr{^\s*$items[1]{name}\s*$},
+      'tbody tr:nth-child(2) td:nth-child(2) > :first-child', qr{^\s*$items[1]{name}\s*$},
       'second row second column data',
+  )
+  ->element_exists(
+      'tbody tr:nth-child(2) td:nth-child(2) a[href=/user/2]',
+      'second row second column has correct link',
   )
   ->element_exists( 'tbody tr:nth-child(3)', 'third tbody row exists' )
   ->text_like(
@@ -82,8 +91,12 @@ $t->get_ok( '/?class=table:table-striped' )
       'third row first column has text-center class',
   )
   ->text_like(
-      'tbody tr:nth-child(3) td:nth-child(2)', qr{^\s*$items[2]{name}\s*$},
+      'tbody tr:nth-child(3) td:nth-child(2) > :first-child', qr{^\s*$items[2]{name}\s*$},
       'third row second column data',
+  )
+  ->element_exists(
+      'tbody tr:nth-child(3) td:nth-child(2) a[href=/user/3]',
+      'third row second column has correct link',
   )
   ;
 
