@@ -248,6 +248,18 @@ widgets and provides copy/paste code snippets to achieve that widget.
 It would be amazing if there was a way to make one template apply to all
 supported libraries.
 
+=item Content section overrides
+
+We cannot, should not, must not make every little thing customizable or
+else our templates will be so complex as to be unmaintainable and
+unusable. We should instead make content sections that can be extended,
+like the C<moai/table> template could have a C<thead> section,
+a C<tbody> section, and a C<tbody.tr> section.
+
+A rule of thumb for adding a feature should be if it can be configured simply by a single
+string. The more complex the configuration needs to be, the more likely it should be
+customized using L<Mojolicious's template C<extends>|Mojolicious::Guides::Rendering/Template inheritance>
+
 =back
 
 =head1 SEE ALSO
