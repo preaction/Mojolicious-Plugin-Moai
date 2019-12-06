@@ -65,6 +65,10 @@ The total number of pages. Required.
 
 The name of the parameter to use for the current page. Defaults to C<page>.
 
+=item id
+
+An ID to add to the pager
+
 =back
 
 =head2 moai/table
@@ -108,6 +112,10 @@ The text to display in the column heading
 
 Add a link to the given named route. The route will be filled in by the current
 item, like C<< url_for $link_to => $item >>.
+
+=item id
+
+An ID to add to the table.
 
 =item class
 

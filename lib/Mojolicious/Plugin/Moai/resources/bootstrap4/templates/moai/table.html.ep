@@ -7,7 +7,7 @@
     );
 %>
 <% if ( $classes{wrapper} ) { %><div class="<%= $classes{wrapper} %>"><% } %>
-<table class="table <%= $classes{table} %>">
+<table class="table <%= $classes{table} %>" id="<%= stash( 'id' ) %>">
     <thead class="<%= $classes{thead} %>">
         <tr>
             % for my $column ( @$columns ) {

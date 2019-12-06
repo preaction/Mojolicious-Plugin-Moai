@@ -20,6 +20,7 @@ $app->routes->get( '/' )->to( cb => sub {
         items => \@items,
         columns => \@columns,
         class => { map { split /:/, $_ } @{ $c->every_param( 'class' ) || [] } },
+        ( map { $_ => $c->param( $_ ) } qw( id ) ),
     );
     $c->render( 'moai/table' );
 } );
@@ -35,8 +36,9 @@ my $t = Test::Mojo->new( $app );
     { key => 'name', title => 'Name', link_to => 'user.profile' },
 );
 
-$t->get_ok( '/?class=table:table-striped' )
+$t->get_ok( '/', form => { class => [ 'table:table-striped' ], id => 'mytable' } )
   ->element_exists( 'table.table', 'table exists' )
+  ->element_exists( 'table#mytable', 'table id is correct' )
   ->element_exists( 'table.table-striped', 'table-striped class added to table' )
   ->element_exists( 'thead', 'thead exists' )
   ->element_exists( 'thead tr:only-child', 'one thead row exists' )

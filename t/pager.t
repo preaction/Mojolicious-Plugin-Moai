@@ -19,10 +19,11 @@ $app->routes->get( '/*template' )->to( cb => sub {
 } );
 my $t = Test::Mojo->new( $app );
 
-$t->get_ok( '/moai/pager', form => { current_page => 3, total_pages => 5 } )
+$t->get_ok( '/moai/pager?id=mypager', form => { current_page => 3, total_pages => 5 } )
   ->status_is( 200 )
   ->or( sub { diag 'Error: ', shift->tx->res->dom->at( '#error,#routes' ) } )
   ->element_exists( 'ul.pagination', 'pagination ul exists' )
+  ->element_exists( 'ul#mypager', 'pagination id is correct' )
   ->element_exists(
     'li:nth-child(1) a[href^=/moai/pager][href*=page=2]',
     'previous link exists and href is correct',
@@ -69,10 +70,11 @@ $t->get_ok( '/moai/pager', form => { current_page => 3, total_pages => 5 } )
   ->text_like( 'li:nth-child(7) > span', qr{^\s*Next\s*$}, 'next link text correct' )
   ;
 
-$t->get_ok( '/moai/pager/mini', form => { current_page => 3, total_pages => 5 } )
+$t->get_ok( '/moai/pager/mini?id=mypager', form => { current_page => 3, total_pages => 5 } )
   ->status_is( 200 )
   ->or( sub { diag 'Error: ', shift->tx->res->dom->at( '#error,#routes' ) } )
   ->element_exists( 'ul.pagination', 'pagination ul exists' )
+  ->element_exists( 'ul#mypager', 'pagination id is correct' )
   ->element_exists(
     'li:nth-child(1) a[href^=/moai/pager][href*=page=2]',
     'previous link exists and href is correct',
