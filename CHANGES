@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.003     2019-12-06 20:43:42-06:00 America/Chicago
+
     [Added]
 
     - Added id configuration to table and pager. We will need some way
