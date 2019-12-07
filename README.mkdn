@@ -7,7 +7,7 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.002
+version 0.003
 
 # SYNOPSIS
 
@@ -70,6 +70,10 @@ previous/next buttons.
 
     The name of the parameter to use for the current page. Defaults to `page`.
 
+- id
+
+    An ID to add to the pager
+
 ## moai/table
 
     <%= include 'moai/table',
@@ -102,6 +106,29 @@ A table of items.
     - title
 
         The text to display in the column heading
+
+    - link\_to
+
+        Add a link to the given named route. The route will be filled in by the current
+        item, like `url_for $link_to => $item`.
+
+    - id
+
+        An ID to add to the table.
+
+    - class
+
+        A hashref of additional classes to add to certain elements:
+
+        - `col` - Add these classes to every cell in the column
+
+- class
+
+    A hashref of additional classes to add to certain elements:
+
+    - `table`
+    - `thead`
+    - `wrapper` - Add a wrapper element with these classes
 
 ## moai/lib
 
@@ -171,6 +198,32 @@ using `moai/lib/stylesheet` and `moai/lib/javascript` respectively.
 - Layouts
 
     A customizable layout with good defaults.
+
+- Extra Classes
+
+    A standard way of adding extra classes to individual tags inside components. In addition
+    to a string, we should also support a subref so that loops can apply classes to certain
+    elements based on input criteria.
+
+- Documentation Sheet
+
+    Each supported library should come with a single page that demonstrates the various
+    widgets and provides copy/paste code snippets to achieve that widget.
+
+    It would be amazing if there was a way to make one template apply to all
+    supported libraries.
+
+- Content section overrides
+
+    We cannot, should not, must not make every little thing customizable or
+    else our templates will be so complex as to be unmaintainable and
+    unusable. We should instead make content sections that can be extended,
+    like the `moai/table` template could have a `thead` section,
+    a `tbody` section, and a `tbody.tr` section.
+
+    A rule of thumb for adding a feature should be if it can be configured simply by a single
+    string. The more complex the configuration needs to be, the more likely it should be
+    customized using [Mojolicious's template `extends`](https://metacpan.org/pod/Mojolicious::Guides::Rendering#Template-inheritance)
 
 # SEE ALSO
 
