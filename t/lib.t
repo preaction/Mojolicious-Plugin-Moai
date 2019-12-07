@@ -17,6 +17,12 @@ subtest 'Bootstrap4' => \&test_lib, 'Bootstrap4',
     js_prereqs => [qw( /jquery- /popper.min.js )],
     ;
 
+subtest 'Bulma' => \&test_lib, 'Bulma',
+    version => '0.8.0',
+    css_min_name => 'bulma.min.css',
+    # Bulma does not have JavaScript
+    ;
+
 done_testing;
 
 sub test_lib {

@@ -5,7 +5,7 @@ our $VERSION = '0.004';
 =head1 SYNOPSIS
 
     use Mojolicious::Lite;
-    plugin Moai => 'Bootstrap4';
+    plugin Moai => 'Bootstrap4'; # or 'Bulma'
     app->start;
     __DATA__
     @@ list.html.ep
@@ -30,6 +30,10 @@ L</moai/lib>, below.
 =head2 Bootstrap4
 
 L<http://getbootstrap.com>
+
+=head2 Bulma
+
+L<http://bulma.io>
 
 =head1 WIDGETS
 
@@ -208,8 +212,6 @@ There should be support for...
 =over
 
 =item * Bootstrap 3
-
-=item * Bulma
 
 =item * Material
 

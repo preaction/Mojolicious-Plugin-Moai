@@ -18,6 +18,13 @@ my %common_selectors = (
         next_elem => 'ul.pagination li:last-child a',
         next_elem_disabled => 'ul.pagination li:last-child span',
     },
+    Bulma => {
+        pager_elem => 'nav.pagination',
+        prev_elem => 'nav.pagination a.pagination-previous',
+        prev_elem_disabled => 'nav.pagination a.pagination-previous[disabled]',
+        next_elem => 'nav.pagination a.pagination-next',
+        next_elem_disabled => 'nav.pagination a.pagination-next[disabled]',
+    },
 );
 
 subtest 'Bootstrap4 pager' => \&test_pager,
@@ -33,6 +40,21 @@ subtest 'Bootstrap4 pager (mini)' => \&test_pager,
     'Bootstrap4',
     template => 'moai/pager/mini',
     %{ $common_selectors{ Bootstrap4 } },
+    ;
+
+subtest 'Bulma pager' => \&test_pager,
+    'Bulma',
+    template => 'moai/pager',
+    %{ $common_selectors{ Bulma } },
+    has_pages => 1,
+    first_elem => 'nav.pagination ul.pagination-list li:first-child a.pagination-link',
+    current_elem => 'nav.pagination ul.pagination-list li a.is-current',
+    ;
+
+subtest 'Bulma pager (mini)' => \&test_pager,
+    'Bulma',
+    template => 'moai/pager/mini',
+    %{ $common_selectors{ Bulma } },
     ;
 
 done_testing;

@@ -16,6 +16,12 @@ subtest 'Bootstrap4' => \&test_table,
     wrapper_elem => 'div',
     ;
 
+subtest 'Bulma' => \&test_table,
+    'Bulma',
+    table_elem => 'table.table',
+    wrapper_elem => 'div',
+    ;
+
 done_testing;
 
 sub test_table {
