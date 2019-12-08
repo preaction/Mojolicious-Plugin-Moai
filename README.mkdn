@@ -7,12 +7,12 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.003
+version 0.004
 
 # SYNOPSIS
 
     use Mojolicious::Lite;
-    plugin Moai => 'Bootstrap4';
+    plugin Moai => 'Bootstrap4'; # or 'Bulma'
     app->start;
     __DATA__
     @@ list.html.ep
@@ -37,6 +37,10 @@ to your layout templates. To add your library using a CDN, see
 ## Bootstrap4
 
 [http://getbootstrap.com](http://getbootstrap.com)
+
+## Bulma
+
+[http://bulma.io](http://bulma.io)
 
 # WIDGETS
 
@@ -176,7 +180,6 @@ using `moai/lib/stylesheet` and `moai/lib/javascript` respectively.
     There should be support for...
 
     - Bootstrap 3
-    - Bulma
     - Material
 
     Moai should support the same features for each library, allowing easy

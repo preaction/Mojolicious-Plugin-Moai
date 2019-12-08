@@ -2,6 +2,10 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+    [Added]
+
+    - Added support for Bulma. Bulma is a CSS-only UI library.
+
 0.003     2019-12-06 20:43:42-06:00 America/Chicago
 
     [Added]
