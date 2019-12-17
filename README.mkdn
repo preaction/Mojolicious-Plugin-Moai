@@ -7,7 +7,7 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.004
+version 0.005
 
 # SYNOPSIS
 
