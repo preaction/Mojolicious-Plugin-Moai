@@ -8,7 +8,7 @@ matrix:
         - perl: "5.30"
           env: COVERAGE=1
     allow_failures:
-        - perl: "blead"
+        - env: COVERAGE=1
 
 before_install:
     - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
