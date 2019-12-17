@@ -149,6 +149,63 @@ A hashref of additional classes to add to certain elements:
 
 =back
 
+=head2 moai/menu/navbar
+
+A horizontal navigation bar.
+
+=head3 Stash
+
+=over
+
+=item menu
+
+An arrayref of menu items. Menu items are arrayrefs with two elements:
+label, and route name.
+
+    $app->routes->get( '/' )->name( 'index' );
+    $app->routes->get( '/blog' )->name( 'blog' );
+    $app->routes->get( '/about' )->name( 'about' );
+
+    <%= include 'moai/menu/navbar',
+        menu => [
+            [ Home => 'index' ],
+            [ Blog => 'blog' ],
+            [ 'About Us' => 'about' ],
+        ],
+    %>
+
+=item brand
+
+A menu item for the "brand" section. An arrayref with two elements:
+a label, and a route name.
+
+    <%= include 'moai/menu/navbar',
+        brand => [ 'Zooniverse' => 'main' ],
+    %>
+
+=item position
+
+Position the navbar. Can be either C<fixed-top> to affix the navbar to
+the top of the viewport or C<fixed-bottom> for the bottom of the
+viewport. If not set, the navbar will be a static element at the current
+location.
+
+=item id
+
+An ID to add to the table.
+
+=item class
+
+A hashref of additional classes to add to certain elements:
+
+=over
+
+=item * C<navbar> - Add these classes to the C<< <nav> >> element
+
+=back
+
+=back
+
 =head2 moai/lib
 
     %= include 'moai/lib', version => '4.1.0';
@@ -191,7 +248,11 @@ There should be widgets for...
 
 =over
 
-=item * menus (vertical lists, horizontal navbars, dropdown buttons)
+=item * other menus (vertical lists, dropdown buttons)
+
+=item * dropdown menus
+
+=item * forms and other items in the navbar
 
 =item * switched panels (tabs, accordion, slider)
 
