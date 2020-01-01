@@ -30,6 +30,43 @@ site you want!
 
 =over
 
+=item table_has
+
+Test a table has the given data, ignoring extra data in the table that is
+not in the test.
+
+=item qr// for text
+
+Element text and attribute values should allow regex matching in addition
+to complete equality.
+
+=item list_is / list_has
+
+Test a list
+
+=item dict_is / dict_has
+
+Test a dictionary list
+
+=item elem_is / elem_has
+
+Test an individual element (using L<Mojo::DOM/at>).
+
+=item all_elem_is / all_elem_has
+
+Test a collection of elements (using L<Mojo::DOM/find>).
+
+=item link_to named route
+
+Elements should be able to test whether they are a link to a named route
+with certain stash values set. This allows for the route's URL to change
+without needing to change the test.
+
+=item Methods for Moai components
+
+Any Moai components that have special effects or contain multiple testable
+elements should be given their own method, with C<_is> and C<_has> variants.
+
 =back
 
 =head1 SEE ALSO

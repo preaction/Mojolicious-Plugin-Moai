@@ -21,6 +21,11 @@ popular UI libraries.
 These components are designed to integrate seamlessly with L<Yancy>,
 L<Mojolicious::Plugin::DBIC>, and L<Mojolicious::Plugin::SQL>.
 
+=head2 Testing Components
+
+The L<Test::Mojo::Role::Moai> library is provided to help test the Moai
+components. It also works without Moai, allowing you to test any website.
+
 =head1 SUPPORTED LIBRARIES
 
 These libraries are not included and the desired version should be added
@@ -252,7 +257,7 @@ There should be widgets for...
 
 =item * dropdown menus
 
-=item * forms and other items in the navbar
+=item * forms and other items in the navbar (move the Form plugin from Yancy?)
 
 =item * switched panels (tabs, accordion, slider)
 
@@ -335,7 +340,7 @@ customized using L<Mojolicious's template C<extends>|Mojolicious::Guides::Render
 
 =head1 SEE ALSO
 
-L<Mojolicious::Guides::Rendering>
+L<Test::Mojo::Role::Moai>, L<Mojolicious::Guides::Rendering>
 
 =cut
 
