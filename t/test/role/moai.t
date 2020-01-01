@@ -130,6 +130,96 @@ subtest 'table' => sub {
         );
         ok !$t->success, 'Test::Mojo success flag is set to false';
 
+        check_test(
+            sub {
+                $t->get_ok( '/' )->table_is(
+                    'table#mytable',
+                    [
+                        {
+                            User => 'preaction',
+                            'E-mail' => {
+                                class => 'bg-primary',
+                                text => 'doug@example.com',
+                                elem => {
+                                    'a[href]' => {
+                                        href => 'mailto:doug@example.com',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            User => 'inara',
+                            'E-mail' => {
+                                class => 'bg-primary',
+                                elem => {
+                                    'a[href]' => {
+                                        href => 'mailto:cat@example.com',
+                                        text => 'cat@example.com',
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                    'table_is with element attributes and descendants (pass)',
+                );
+            },
+            ok => 1,
+            name => 'table_is with element attributes and descendants (pass)',
+        );
+        ok $t->success, 'Test::Mojo success flag is set to true';
+
+        check_test(
+            sub {
+                $t->get_ok( '/' )->table_is(
+                    'table#mytable',
+                    [
+                        {
+                            User => 'preaction',
+                            'E-mail' => {
+                                class => 'bg-secondary',
+                                text => 'doug@example.com',
+                                elem => {
+                                    'a[href]' => {
+                                        href => 'mailto:doug@example.com',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            User => 'inara',
+                            'E-mail' => {
+                                class => 'bg-primary',
+                                elem => {
+                                    'strong' => 'active',
+                                    'a[href]' => {
+                                        href => 'mailto:dog@example.com',
+                                        text => 'dog@example.com',
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                    'table_is with element attributes and descendants (fail)',
+                );
+            },
+            ok => 0,
+            name => 'table_is with element attributes and descendants (fail)',
+            diag => qr{
+                Row:\s*1\s*-\s*Col:\s*2\s*
+                Expected:\s*class\s*=\s*bg-secondary\s*
+                Got:\s*class\s*=\s*bg-primary\s*
+                Row:\s*2\s*-\s*Col:\s*2\s*
+                Expected:\s*a\[href\]:\s*"dog\@example\.com"\s*
+                Got:\s*a\[href\]:\s*"cat\@example\.com"\s*
+                Row:\s*2\s*-\s*Col:\s*2\s*
+                Expected:\s*a\[href\]:\s*href\s*=\s*mailto:dog\@example\.com\s*
+                Got:\s*a\[href\]:\s*href\s*=\s*mailto:cat\@example\.com\s*
+                Row:\s*2\s*-\s*Col:\s*2\s*
+                Expected:\s*elem\s*"strong"\s*
+                Got:\s*<undef>\s*
+            }xms,
+        );
+        ok !$t->success, 'Test::Mojo success flag is set to false';
     };
 };
 
@@ -151,11 +241,11 @@ __DATA__
     % }
         <tr>
             <td>preaction</td>
-            <td><a href="mailto:doug@example.com">doug@example.com</a></td>
+            <td class="bg-primary"><a href="mailto:doug@example.com">doug@example.com</a></td>
         </tr>
         <tr>
             <td>inara</td>
-            <td><a href="mailto:cat@example.com">cat@example.com</a></td>
+            <td class="bg-primary"><a href="mailto:cat@example.com">cat@example.com</a></td>
         </tr>
     % if ( !param 'noparts' ) {
     </tbody>
