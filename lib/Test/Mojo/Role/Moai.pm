@@ -48,7 +48,9 @@ use Test::More;
     $t = $t->table_is( '#mytable', [ [ 1, 'Doug' ] ] );
     $t = $t->table_is( '#mytable', [ [ 1, 'Doug' ] ], 'user table' );
 
-Check data in a table is complete and correct.
+Check data in a table is complete and correct. If a table contains a
+C<< <tbody> >> element, this method will test the data inside. If not,
+it will test all rows in the table.
 
 =cut
 
@@ -64,7 +66,7 @@ sub table_is {
     }
 
     my @fails;
-    my $tbody = $el->at( 'tbody' );
+    my $tbody = $el->at( 'tbody' ) // $el;
     # ; use Data::Dumper;
     # ; say Dumper $el;
     for my $i ( 0..$#$rows ) {
