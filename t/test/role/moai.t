@@ -97,6 +97,39 @@ subtest 'table' => sub {
         );
         ok $t->success, 'Test::Mojo success flag is set to true';
 
+        check_test(
+            sub {
+                $t->get_ok( '/' )->table_is(
+                    'table#mytable',
+                    [
+                        { User => 'preaction', 'E-mail' => 'doug@example.com' },
+                        { User => 'inara', 'E-mail' => 'cat@example.com' },
+                    ],
+                    'table_is with unordered hashes (pass)',
+                );
+            },
+            ok => 1,
+            name => 'table_is with unordered hashes (pass)',
+        );
+        ok $t->success, 'Test::Mojo success flag is set to true';
+
+        check_test(
+            sub {
+                $t->get_ok( '/' )->table_is(
+                    'table#mytable',
+                    [
+                        { User => 'preaction', 'E-mail' => 'doug@example.com' },
+                        { User => 'inara', 'E-mail' => 'dog@example.com' },
+                    ],
+                    'table_is with unordered hashes (fail)',
+                );
+            },
+            ok => 0,
+            name => 'table_is with unordered hashes (fail)',
+            diag => qr{Row: 2 - Col: 2\nExpected: "dog\@example\.com"\nGot: "cat\@example\.com"},
+        );
+        ok !$t->success, 'Test::Mojo success flag is set to false';
+
     };
 };
 

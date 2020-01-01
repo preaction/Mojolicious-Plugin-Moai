@@ -44,13 +44,22 @@ use Test::More;
 
 =method table_is
 
-    # <table><tr><td>1</td><td>Doug</td></tr></table>
+    # <table>
+    # <thead><tr><th>ID</th><th>Name</th></tr></thead>
+    # <tbody><tr><td>1</td><td>Doug</td></tr></tbody>
+    # </table>
     $t = $t->table_is( '#mytable', [ [ 1, 'Doug' ] ] );
     $t = $t->table_is( '#mytable', [ [ 1, 'Doug' ] ], 'user table' );
+    $t = $t->table_is( '#mytable', [ { ID => 1, Name => 'Doug' } ] );
 
-Check data in a table is complete and correct. If a table contains a
-C<< <tbody> >> element, this method will test the data inside. If not,
-it will test all rows in the table.
+Check data in a table is complete and correct. Data can be tested as
+arrays (ordered) or hashes (unordered).
+
+If a table contains a C<< <tbody> >> element, this method will test the
+data inside. If not, it will test all rows in the table.
+
+    # <table><tr><td>1</td><td>Doug</td></tr></table>
+    $t = $t->table_is( '#mytable', [ [ 1, 'Doug' ] ] );
 
 =cut
 
@@ -65,19 +74,33 @@ sub table_is {
         return $t->success( 0 );
     }
 
+    my $thead = $el->at( 'thead' );
+    my @columns;
+    if ( my $thead = $el->at( 'thead' ) ) {
+        @columns = $thead->at( 'tr' )->children( 'td,th' )
+            ->map( 'all_text' )
+            ->map( sub { trim( $_ ) } )
+            ->each;
+        #; say "Cols: " . join ', ', @columns;
+    }
+
     my @fails;
     my $tbody = $el->at( 'tbody' ) // $el;
     # ; use Data::Dumper;
     # ; say Dumper $el;
     for my $i ( 0..$#$rows ) {
-        my $row_data = $rows->[ $i ];
+        my @row_data
+            = ref $rows->[ $i ] eq 'HASH'
+            ? ( map { $rows->[ $i ]{ $_ } } @columns )
+            : @{ $rows->[ $i ] };
         my $row_el = $tbody->children->[ $i ];
-        for my $c ( 0..$#$row_data ) {
-            my $expect_data = $row_data->[ $c ];
+        for my $c ( 0..$#row_data ) {
+            my $expect_data = $row_data[ $c ];
             my $cell_el = $row_el->children->[ $c ];
             # ; say Dumper $cell_el;
             my $got_data = trim( $cell_el->all_text );
             if ( $expect_data ne $got_data ) {
+                #; say sprintf "%s,%s: Exp: %s; Got: %s", $i, $c, $expect_data, $got_data;
                 push @fails, {
                     row => $i + 1,
                     col => $c + 1,
