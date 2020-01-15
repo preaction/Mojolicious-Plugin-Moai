@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.008     2020-01-15 00:39:48-05:00 America/New_York
+
     [Fixed]
 
     - Fixed missing prereq on Test2::API. Thanks @manwar! [Github #1]
