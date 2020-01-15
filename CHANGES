@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.007     2020-01-15 00:33:39-05:00 America/New_York
+
     [Added]
 
     - The UI library version can now be specified in the plugin
