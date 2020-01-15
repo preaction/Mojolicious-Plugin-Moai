@@ -52,11 +52,11 @@
    "provides" : {
       "Mojolicious::Plugin::Moai" : {
          "file" : "lib/Mojolicious/Plugin/Moai.pm",
-         "version" : "0.006"
+         "version" : "0.007"
       },
       "Test::Mojo::Role::Moai" : {
          "file" : "lib/Test/Mojo/Role/Moai.pm",
-         "version" : "0.006"
+         "version" : "0.007"
       }
    },
    "release_status" : "stable",
@@ -71,7 +71,7 @@
          "web" : "https://github.com/preaction/Mojolicious-Plugin-Moai"
       }
    },
-   "version" : "0.006",
+   "version" : "0.007",
    "x_authority" : "cpan:PREACTION",
    "x_generated_by_perl" : "v5.28.0",
    "x_serialization_backend" : "Cpanel::JSON::XS version 4.06"
