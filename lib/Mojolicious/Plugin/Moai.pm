@@ -331,6 +331,12 @@ Built-in selection of CDN-based themes for each library
 
 A customizable layout with good defaults.
 
+=item Default Colors
+
+A default color scheme (light / dark) that responds to a user's
+light/dark preferences (MacOS "dark mode"). The default should be settable from
+the main config, and overridable for individual elements.
+
 =item Extra Classes
 
 A standard way of adding extra classes to individual tags inside components. In addition
