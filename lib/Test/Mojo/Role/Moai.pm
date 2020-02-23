@@ -30,11 +30,6 @@ site you want!
 
 =over
 
-=item table_has
-
-Test a table has the given data, ignoring extra data in the table that is
-not in the test.
-
 =item qr// for text
 
 Element text and attribute values should allow regex matching in addition
@@ -125,23 +120,9 @@ attributes.
 sub table_is {
     my ( $t, $selector, $rows, $name ) = @_;
     $name ||= 'table ' . $selector . ' data is correct';
+    my $el = $t->_test_find_el( $selector, $name ) || return;
 
-    my $el = $t->tx->res->dom->at( $selector );
-    if ( !$el ) {
-        Test::More::fail( $name );
-        Test::More::diag( 'Table ' . $selector . ' not found' );
-        return $t->success( 0 );
-    }
-
-    my $thead = $el->at( 'thead' );
-    my @columns;
-    if ( my $thead = $el->at( 'thead' ) ) {
-        @columns = $thead->at( 'tr' )->children( 'td,th' )
-            ->map( 'all_text' )
-            ->map( sub { trim( $_ ) } )
-            ->each;
-        #; say "Cols: " . join ', ', @columns;
-    }
+    my @columns = $t->_table_cols( $el );
 
     my @fails;
     my $tbody = $el->at( 'tbody' ) // $el;
@@ -260,6 +241,144 @@ sub table_is {
 
     Test::More::pass( $name );
     return $t->success( 1 );
+}
+
+=method table_has
+
+    # <table>
+    # <thead><tr><th>ID</th><th>Name</th></tr></thead>
+    # <tbody><tr><td>1</td><td>Doug</td></tr></tbody>
+    # </table>
+    $t = $t->table_has( '#mytable', [ { ID => 1, Name => 'Doug' } ] );
+    $t = $t->table_has( '#mytable', [ { Name => 'Doug' } ] );
+
+Check a subset of rows/columns of data in a table.
+
+=cut
+
+sub table_has {
+    my ( $t, $selector, $expects, $name ) = @_;
+    $name ||= 'table ' . $selector . ' data is correct';
+    my $el = $t->_test_find_el( $selector, $name ) || return $t;
+    my @columns = $t->_table_cols( $el );
+
+    my ( @fails, @matches, %count );
+    my $tbody = $el->at( 'tbody' ) // $el;
+    # ; use Data::Dumper;
+    # ; say Dumper $el;
+    EXPECT: for my $i ( 0..$#$expects ) {
+        my $expect = $expects->[$i];
+        # Try to find rows that match in the table. Prefer more columns
+        # matching to fewer. Later we will determine if every row of
+        # the table can be assigned to a single unique row of input.
+        ROW_EL: for my $row_i ( 0 .. @{ $tbody->children }-1 ) {
+            my $row_el = $tbody->children->[ $row_i ];
+            for my $c ( 0..$#columns ) {
+                next unless exists $expect->{ $columns[ $c ] };
+                # ; say sprintf 'Expect: %s; Got: %s',
+                #     $expect->{ $columns[ $c ] },
+                #     $row_el->children->[ $c ]->all_text,
+                #     ;
+                my $col_el = $row_el->children->[ $c ];
+                next ROW_EL if $expect->{ $columns[ $c ] } ne $col_el->all_text;
+            }
+            # All columns expected have matching values, so this row
+            # matches
+            #; say sprintf 'Matched %d with %s', $i, $row_i;
+            push @{ $matches[ $i ] }, $row_i;
+            $count{ $row_i }++;
+            next EXPECT;
+        }
+        # No row elements match this expect, so this row fails
+        push @fails, { input => $i };
+    }
+
+    # Starting from the input rows that matched the fewest table rows,
+    # assign a single table row match to each input row match. Any input
+    # row that is left without a table row is now a failure.
+    my %used_rows;
+    for my $i ( sort { @{ $matches[ $a ] } <=> @{ $matches[ $b ] } } 0..$#matches ) {
+        my $match = $matches[ $i ];
+        my @possible = grep { !$used_rows{ $_ } } @$match;
+        # If there are no possible rows for this input, we've failed
+        if ( !@possible ) {
+            push @fails, {
+                input => $i,
+            };
+        }
+        # If there's only one possible row for this input, we have to
+        # use it
+        elsif ( @possible == 1 ) {
+            $used_rows{ $possible[0] } = $i;
+        }
+        # Multiple possibilities exist, so find the one with the least
+        # amount of other uses
+        else {
+            my ( $choice ) = sort { $count{ $a } <=> $count{ $b } } @possible;
+            $used_rows{ $choice } = $i;
+        }
+    }
+
+    if ( @fails ) {
+        Test::More::fail( $name );
+        my @fail_strs;
+        for my $fail ( @fails ) {
+            my $expect = $expects->[ $fail->{input} ];
+            push @fail_strs,
+                join ', ',
+                map { sprintf '%s="%s"', $_, $expect->{ $_ } }
+                sort keys %$expect;
+        }
+        Test::More::diag(
+            join "\n",
+            map {
+                sprintf qq{Missing: Row with %s}, $_
+            }
+            @fail_strs
+        );
+        return $t->success( 0 );
+    }
+
+    Test::More::pass( $name );
+    return $t->success( 1 );
+}
+
+# Find the element with the given selector and return it. If not found,
+# fail the test and return empty. If the test failed, you should return
+# the $t object (to allow the Test::Mojo convention of chaining).
+#
+#   my $el = $t->_test_find_el( $selector, $test_name ) || return $t;
+#
+sub _test_find_el {
+    my ( $t, $selector, $name ) = @_;
+    $name ||= 'element ' . $selector . ' exists';
+
+    my $el = $t->tx->res->dom->at( $selector );
+    if ( !$el ) {
+        Test::More::fail( $name );
+        Test::More::diag( 'Element ' . $selector . ' not found' );
+        $t->success( 0 );
+        return;
+    }
+    return $el;
+}
+
+# Get the columns in the given table. The table columns must be in
+# a <thead> element. Returns a list of columns.
+#
+#   my @columns = $t->_table_cols( $table_el );
+#
+sub _table_cols {
+    my ( $t, $el ) = @_;
+    my @columns;
+    if ( my $thead = $el->at( 'thead' ) ) {
+        @columns = $thead->at( 'tr' )->children( 'td,th' )
+            ->map( 'all_text' )
+            ->map( sub { trim( $_ ) } )
+            ->each;
+        #; say "Cols: " . join ', ', @columns;
+    }
+    return @columns;
 }
 
 1;
