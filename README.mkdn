@@ -7,7 +7,7 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.008
+version 0.009
 
 # SYNOPSIS
 
@@ -278,6 +278,12 @@ using `moai/lib/stylesheet` and `moai/lib/javascript` respectively.
 - Layouts
 
     A customizable layout with good defaults.
+
+- Default Colors
+
+    A default color scheme (light / dark) that responds to a user's
+    light/dark preferences (MacOS "dark mode"). The default should be settable from
+    the main config, and overridable for individual elements.
 
 - Extra Classes
 
