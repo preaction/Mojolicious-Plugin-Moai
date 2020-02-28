@@ -16,6 +16,7 @@ get '/elements' => 'elements';
 get '/components' => 'components';
 get '/elements/table' => 'table';
 get '/components/pager' => 'pager';
+get '/components/menu' => 'menu';
 
 app->start;
 
@@ -25,6 +26,7 @@ __DATA__
 <!-- XXX This is until we get a default layout in Moai -->
 <head>
 %= include 'moai/lib'
+%= stylesheet 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 <style>
     .example {
         border: 3px solid #f8f9fa;
@@ -102,6 +104,7 @@ href="http://mojolicious.org">Mojolicious web framework</a>.
 
 @@ component_list.html.ep
 %= link_to 'Pager', 'pager'
+%= link_to 'Menu', 'menu'
 
 @@ table.html.ep
 <h1>Table</h1>
@@ -234,4 +237,229 @@ and the total pages to produce a list of clickable page links</p>
     total_pages => 5,
 %>
 <figure><pre><code><%%= include 'moai/pager/mini', total_pages => 5 %></code></pre></figure>
+</section>
+
+@@ menu.html.ep
+<h1>Menu</h1>
+
+<p>Menus integrate with <a href="https://mojolicious.org/perldoc/Mojolicious/Guides/Routing#Named-routes">Mojolicious's named routes</a>
+to ensure that your menus get updated when your routes change.</p>
+
+<h2>Buttons</h2>
+
+<p>Menu buttons are good for general use as a single drop-down menu or
+a full toolbar.</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [ 'Elements'    => '#' ],
+        [ 'Components'  => '#' ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [ 'Elements'    => '#' ],
+        [ 'Components'  => '#' ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<p>Extra attributes can be added to the link element like
+<code>disabled</code> or <code>style</code>.</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [ 'Elements'    => '#', disabled => 'disabled'            ],
+        [ 'Components'  => '#', style    => 'background: skyblue' ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [ 'Elements'    => '#', disabled => 'disabled'            ],
+        [ 'Components'  => '#', style    => 'background: skyblue' ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<p>The current route will be highlighted automatically.</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [ Table => 'table' ],
+        [ Menu  => 'menu'  ], # -- the current route
+        [ Pager => 'pager' ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [ Table => 'table' ],
+        [ Menu  => 'menu'  ], # -- the current route
+        [ Pager => 'pager' ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<!--
+    XXX Idea for labelled colors later...
+    <p>Colors can be added...</p>
+    <section class="example">
+    <%= include 'moai/menu/buttons',
+        items => [
+            [ Primary   => '#', color => -primary   ],
+            [ Secondary => '#', color => -secondary ],
+            [ Success   => '#', color => -success   ],
+            [ Warning   => '#', color => -warning   ],
+            [ Danger    => '#', color => -danger    ],
+            [ Info      => '#', color => -info      ],
+        ],
+    %>
+    <figure><pre><code><%%= include 'moai/menu/buttons',
+        items => [
+            [ Primary   => '#', color => -primary   ],
+            [ Secondary => '#', color => -secondary ],
+            [ Success   => '#', color => -success   ],
+            [ Warning   => '#', color => -warning   ],
+            [ Danger    => '#', color => -danger    ],
+            [ Info      => '#', color => -info      ],
+        ],
+    %%></pre></code></figure>
+    </section>
+-->
+
+<p>Any HTML content can be used as the link text with
+<a href="https://mojolicious.org/perldoc/Mojolicious/Plugin/DefaultHelpers#b">the
+<code>b()</code> helper</a>.</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        # XXX: Build an icon helper!
+        [ b('<i class="fa fa-cube "></i> Elements'  ) => '#' ],
+        [ b('<i class="fa fa-cubes"></i> Components') => '#' ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        # XXX: Build an icon helper!
+        [ b('&lt;i class="fa fa-cube ">&lt;/i> Elements'  ) => '#' ],
+        [ b('&lt;i class="fa fa-cubes">&lt;/i> Components') => '#' ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<p>Buttons can turn in to dropdown menus.</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [
+            Elements => [
+                [ Table => 'table' ],
+            ],
+        ],
+        [
+            Components => [
+                [ Pager => 'pager' ],
+                [ Menu  => 'menu'  ],
+            ],
+        ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [
+            Elements => [
+                [ Table => 'table' ],
+            ],
+        ],
+        [
+            Components => [
+                [ Pager => 'pager' ],
+                [ Menu  => 'menu'  ],
+            ],
+        ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<p>Dropdowns can have plain text elements and dividers, and dropdown items
+can be given attributes. If a dropdown menu is the current route, it will
+be highlighted!</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [
+            Elements => [
+                'Elements',
+                [ b('<i class="fa fa-table"></i> Table') => 'table' ],
+                [ Form => 'form', disabled => 'disabled' ],
+            ],
+        ],
+        [
+            Components => [
+                'Components',
+                [ Pager => 'pager', style => 'background: #ccccff' ],
+                undef,
+                [ Menu  => 'menu' ], # -- the current route
+            ],
+        ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [
+            Elements => [
+                'Elements',
+                [ b('&lt;i class="fa fa-table">&lt;/i> Table') => 'table' ],
+                [ Form => 'form', disabled => 'disabled' ],
+            ],
+        ],
+        [
+            Components => [
+                'Components',
+                [ Pager => 'pager', style => 'background: #ccccff' ],
+                undef,
+                [ Menu  => 'menu' ], # -- the current route
+            ],
+        ],
+    ],
+%%></pre></code></figure>
+</section>
+
+<p>Dropdowns can even have any content you want!</p>
+<section class="example">
+<%= include 'moai/menu/buttons',
+    items => [
+        [
+            b('<i class="fa fa-user"></i> preaction') => [
+                b(q{
+                    <span style="border-radius: 50px">
+                    <img src="https://www.gravatar.com/avatar/}
+                        . Mojo::Util::md5_sum( 'doug@preaction.me' )
+                        . q{.jpg?s=200">
+                    </span>
+                    Doug Bell
+                }),
+                [ b('Inbox <span class="badge badge-info pull-right">5</span>') => '#' ],
+                undef,
+                [ 'Edit Profile' => '#' ],
+            ],
+        ],
+        [ b('<i class="fa fa-sign-out"></i>') => '#' ],
+    ],
+%>
+<figure><pre><code><%%= include 'moai/menu/buttons',
+    items => [
+        [
+            b('&lt;i class="fa fa-user">&lt;/i> preaction') => [
+                b(q{
+                    &lt;span style="border-radius: 50px">
+                    &lt;img src="https://www.gravatar.com/avatar/}
+                        . Mojo::Util::md5_sum( 'doug@preaction.me' )
+                        . q{.jpg?s=200">
+                    &lt;/span>
+                }),
+            ],
+        ],
+        [ b('&lt;i class="fa fa-sign-out">&lt;/i>') => '#' ],
+    ],
+%%></pre></code></figure>
 </section>
