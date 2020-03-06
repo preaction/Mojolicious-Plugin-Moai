@@ -2,6 +2,16 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+    [Added]
+
+    - Added a grid template for using a library's grid system
+    - Added a default layout
+
+    [Fixed]
+
+    - Fixed the documentation examples to pass an arrayref when
+      registering the plugin, as expected
+
 0.009     2020-02-27 22:03:51-06:00 America/Chicago
 
     [Added]
