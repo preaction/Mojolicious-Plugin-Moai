@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.010     2020-03-05 23:29:55-06:00 America/Chicago
+
     [Added]
 
     - Added a grid template for using a library's grid system
