@@ -267,6 +267,101 @@ specified in the plugin (if any). Required.
 
 =back
 
+=head1 LAYOUTS
+
+Layouts wrap your templates in a common framing. See L<the Mojolicious
+docs for more information on
+Layouts|https://mojolicious.org/perldoc/Mojolicious/Guides/Rendering#Layouts>.
+
+=head2 Using Moai Layouts
+
+To get started using a Moai layout, L<extend a Moai layout template|https://mojolicious.org/perldoc/Mojolicious/Guides/Rendering#Template-inheritance>
+to fill in the missing parts.
+
+    use Mojolicious::Lite;
+    plugin Moai => [ 'Bootstrap4', { version => '4.4.1' } ];
+    get '/' => 'index';
+    __END__
+    @@ index.html.ep
+    % layout 'site';
+    <h1>Welcome!</h1>
+    @@ layouts/site.html.ep
+    % extends 'layouts/moai/default';
+    %# Add a main nav with links to our products, a history, and contact page
+    % content_for navbar => begin
+        <%= include 'moai/navbar',
+            position => 'fixed-top',
+            brand => [ 'My Site' => 'index' ],
+            menu => [
+                [ 'Products'   => 'products' ],
+                [ 'About Us'   => 'history'  ],
+                [ 'Contact Us' => 'contact'  ],
+            ],
+        %>
+    % end
+
+=head2 Included Layouts
+
+These layouts are included with Moai.
+
+=head3 default
+
+The default layout is a general-purpose layout for almost any use. Other
+layouts can extend this one to provide more-specific features.
+
+=head4 Content Sections
+
+=over
+
+=item head
+
+This content goes inside the C<< <head> .. </head> >> element, just before the
+closing C<< </head> >>.
+
+=item header
+
+This section is the very top of the page and contains the navbar and an optional
+hero element.
+
+=over
+
+=item navbar
+
+This section is a placeholder for a L</moai/menu/navbar> widget (though
+you can put anything here if you'd like).
+
+=item hero
+
+This content section is a placeholder for whatever header element the current
+page requires.
+
+=back
+
+=item container
+
+This section contains a grid container with a single row and two
+columns: the C<main> section and the C<sidebar> section.
+
+=over
+
+=item main
+
+This section contains the C<< <main> >> element and the main content of
+the page from the default buffer of the L<Mojolicious C<content> helper|https://mojolicious.org/perldoc/Mojolicious/Plugin/DefaultHelpers#content>.
+
+=item sidebar
+
+This section is a placeholder for whatever sidebar content the current page
+requires.
+
+=back
+
+=item footer
+
+This section is a placeholder for whatever footer content the current page requires.
+
+=back
+
 =head1 TODO
 
 =over
@@ -342,10 +437,6 @@ Some examples of progressive enhancement:
 
 Built-in selection of CDN-based themes for each library
 
-=item Layouts
-
-A customizable layout with good defaults.
-
 =item Default Colors
 
 A default color scheme (light / dark) that responds to a user's
@@ -395,8 +486,11 @@ sub register {
     my $library = $config->[0];
     $self->config( $config->[1] || {} );
     $app->helper( moai => sub { $self } );
-    my $libdir = path( __FILE__ )->sibling( 'Moai' )->child( 'resources', lc $library );
-    push @{$app->renderer->paths}, $libdir->child( 'templates' );
+    my $resources = path( __FILE__ )->sibling( 'Moai' )->child( 'resources' );
+    push @{$app->renderer->paths},
+        $resources->child( $library, 'templates' ),
+        $resources->child( 'shared', 'templates' ),
+        ;
     return;
 }
 
