@@ -65,6 +65,23 @@ widget to your layout template to get the UI library.
 Widgets are snippets that you can include in your templates using the
 L<include helper|Mojolicious::Guides::Rendering/Partial templates>.
 
+=head2 moai/grid
+
+    <%= include 'moai/grid', content => begin %>
+        <%= include 'moai/grid/col', size => 9, content => begin %>
+            This column takes up 9/12 width
+        <% end %>
+        <%= include 'moai/grid/col', content => begin %>
+            This column will fill the remaining space
+        <% end %>
+    <% end %>
+
+The C<moai/grid> and C<moai/grid/col> templates provide the library's
+grid system. C<moai/grid> starts a grid row, and C<moai/grid/col> is
+a column in that row.  For libraries like Bootstrap which have an
+additional "container" element, that element is already included in the
+C<moai/grid> template.
+
 =head2 moai/pager
 
     <%= include 'moai/pager',
@@ -287,8 +304,6 @@ There should be widgets for...
 =item * menus (dropdown button, menu bar)
 
 =item * popups (modal dialogs, tooltips, notifications)
-
-=item * grid (maybe...)
 
 =back
 
