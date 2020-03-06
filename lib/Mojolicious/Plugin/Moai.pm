@@ -5,7 +5,7 @@ our $VERSION = '0.010';
 =head1 SYNOPSIS
 
     use Mojolicious::Lite;
-    plugin Moai => 'Bootstrap4', { version => '4.4.1' };
+    plugin Moai => [ 'Bootstrap4', { version => '4.4.1' } ];
     app->start;
     __DATA__
     @@ list.html.ep
@@ -46,9 +46,9 @@ Add the Moai plugin to your Mojolicious application and specify which
 UI library and version of that library you want to use.
 
     use Mojolicious::Lite;
-    plugin Moai => 'Bootstrap4', {
+    plugin Moai => [ 'Bootstrap4', {
         version => '4.4.1',
-    };
+    } ];
 
 Now you can add widgets. You will likely first want to add the C<moai/lib>
 widget to your layout template to get the UI library.
