@@ -2,6 +2,11 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+    [Fixed]
+
+    - Fixed regression causing failures on case-sensitive file systems.
+      Thanks CPAN Testers and Travis-CI!
+
 0.010     2020-03-05 23:29:55-06:00 America/Chicago
 
     [Added]
