@@ -483,10 +483,10 @@ use Mojo::File qw( path );
 has config =>;
 sub register {
     my ( $self, $app, $config ) = @_;
-    my $library = $config->[0];
+    my $library = lc $config->[0];
     $self->config( $config->[1] || {} );
     $app->helper( moai => sub { $self } );
-    my $resources = path( __FILE__ )->sibling( 'Moai' )->child( 'resources' );
+    my $resources = path( __FILE__ )->sibling( 'Moai', 'resources' );
     push @{$app->renderer->paths},
         $resources->child( $library, 'templates' ),
         $resources->child( 'shared', 'templates' ),
