@@ -1,5 +1,5 @@
 package Test::Mojo::Role::Moai;
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 # ABSTRACT: Test::Mojo role to test UI components
 
 =head1 SYNOPSIS

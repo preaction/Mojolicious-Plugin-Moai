@@ -2,6 +2,8 @@ Changelog for Mojolicious-Plugin-Moai
 
 {{ $NEXT }}
 
+0.012     2020-04-04 15:54:57-05:00 America/Chicago
+
     [Other]
 
     - Improved tests for navbar menu. This raises the needed Mojolicious
