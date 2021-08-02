@@ -7,7 +7,7 @@ Mojolicious::Plugin::Moai - Mojolicious UI components using modern UI libraries
 
 # VERSION
 
-version 0.012
+version 0.013
 
 # SYNOPSIS
 
@@ -414,9 +414,10 @@ layouts can extend this one to provide more-specific features.
 
 Doug Bell <preaction@cpan.org>
 
-# CONTRIBUTOR
+# CONTRIBUTORS
 
-Mohammad S Anwar <mohammad.anwar@yahoo.com>
+- Mohammad S Anwar <mohammad.anwar@yahoo.com>
+- Roy Storey <kiwiroy@users.noreply.github.com>
 
 # COPYRIGHT AND LICENSE
 
