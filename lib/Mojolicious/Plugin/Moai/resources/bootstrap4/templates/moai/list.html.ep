@@ -1,0 +1,18 @@
+<%
+    my $stash_class = stash( 'class' ) // {};
+    my %classes = (
+        wrapper => $stash_class->{ wrapper } // '',
+        item => $stash_class->{ item } // '',
+    );
+%>
+<div class="list-group <%= $classes{wrapper} %>" id="<%= stash( 'id' ) %>">
+  % for my $item ( @$items ) {
+    <% if ( my $route = stash 'link_to' ) { %>
+        <a class="list-group-item <%= $classes{item} %>" href="<%= url_for $route, $item %>">
+    <% } else { %>
+        <span class="list-group-item <%= $classes{item} %>">
+    <% } %>
+    <%= $item->{ stash 'column' } %>
+    <% if ( stash 'link_to' ) { %></a><% } else { %></span><% } %>
+  % }
+</div>

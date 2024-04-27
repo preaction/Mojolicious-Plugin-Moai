@@ -191,6 +191,37 @@ A hashref of additional classes to add to certain elements:
 
 =back
 
+=head2 moai/list
+
+    <%= include 'moai/list',
+        items => [
+            { id => 1, name => 'Doug' },
+        ],
+        column => 'name',
+        link_to => 'user.profile',
+    %>
+
+A list of items, potentially with links.
+
+=head3 Stash
+
+=over
+
+=item items
+
+The items to display in the list. An arrayref of hashrefs.
+
+=item column
+
+The column to display in the list. Should be a key of the item.
+
+=item link_to
+
+A route to link the item to. The route will be given the entire item to
+build the link.
+
+=back
+
 =head2 moai/menu/navbar
 
 A horizontal navigation bar.
