@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@mojolicious/server-starter": "^2.0.0",
+    "playwright": "^1.17.1",
+    "tap": "^15.1.0"
+  }
+}

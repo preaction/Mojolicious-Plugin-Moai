@@ -1,0 +1,139 @@
+<%
+  # Define the "route" stash to change what the API URL is
+  my $route = stash( 'route' ) || current_route;
+  my $url = url_with( $route, format => 'json' )->to_abs;
+
+  my $template_item = {
+    map { $_ => ":$_" } keys %{ @{ stash('items') }[0] }
+  };
+  my $link_template = '';
+  if ( my $link_route = stash 'link_to' ) {
+    $link_template = url_for( $link_route, $template_item );
+  }
+  my $content_template = '';
+  if (my $content = stash 'content') {
+    $content_template = $content->($template_item);
+  }
+  else {
+    $content_template = ":" . stash('column');
+  }
+%>
+<script>
+if (!window.moaiDefined || !window.moaiDefined['auto-list']) {
+  class MoaiAutoList extends HTMLElement {
+
+    currentOffset = 0
+    limit = 0
+    itemRoute = null
+    listElem = null
+    templateElem = null
+
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      this.observer = new MutationObserver(this.onMutation.bind(this));
+      this.observer.observe(this, { childList: true });
+      this.readList();
+      this.addEventListener('click', this.onClick);
+    }
+
+    disconnectedCallback() {
+      this.observer.disconnect();
+      this.removeEventListener('click');
+    }
+
+    onClick(event) {
+      if (event.target == this.querySelector('button[data-more]')) {
+        this.fetchMore();
+      }
+    }
+
+    onMutation(mutations) {
+      for ( const m of mutations ) {
+        if (!m.addedNodes || !m.addedNodes.length) {
+          continue;
+        }
+        this.readList();
+        break;
+      }
+    }
+
+    readList() {
+      if ( this.listElem ) {
+        return;
+      }
+      const node = this.querySelector('[data-list-wrapper] > *')
+      if ( !node || !node.children.length ) {
+        return;
+      }
+      this.listElem = node;
+      this.currentOffset = 0;
+      this.limit = node.children.length;
+      this.route = new URL(this.dataset.remote);
+    }
+
+    async fetchMore() {
+      this.route.searchParams.set('$offset', this.currentOffset + this.limit);
+      const res = await fetch(this.route);
+      this.currentOffset = parseInt(this.route.searchParams.get('$offset'));
+
+      const itemElem = this.listElem.children[0];
+      const contentTemplate = this.querySelector('template').content;
+      for ( const item of await res.json() ) {
+        if ( !item ) {
+          continue;
+        }
+        const newItem = itemElem.cloneNode();
+        const newContent = contentTemplate.cloneNode(true);
+        newItem.appendChild(newContent);
+
+        if (newItem.tagName === 'A') {
+          const newHref = this.dataset.hrefTemplate.replaceAll(
+            /:(\w+)/g,
+            (_, key) => {
+              return item[key]
+            },
+          );
+          newItem.setAttribute('href', newHref);
+        }
+
+        var walker = document.createTreeWalker(
+          newItem,
+          NodeFilter.SHOW_TEXT,  // filtering only text nodes
+          null,
+          false
+        );
+        while (walker.nextNode()) {
+          const node = walker.currentNode
+          const text = node.nodeValue.trim()
+          if (text) {
+            node.nodeValue = text.replaceAll(
+              /:(\w+)/g,
+              (_, key) => {
+                return item[key];
+              },
+            );
+          }
+        }
+        this.listElem.appendChild(newItem);
+      }
+    }
+  }
+
+  window.customElements.define('moai-auto-list', MoaiAutoList);
+  if (!window.moaiDefined) {
+    window.moaiDefined = {};
+  }
+  window.moaiDefined['auto-list'] = true;
+}
+</script>
+
+<moai-auto-list data-remote="<%= $url %>" data-column="<%= stash 'column' %>" data-href-template="<%= $link_template %>">
+  <div data-list-wrapper>
+    %= include 'moai/list'
+  </div>
+  <button data-more>More</button>
+  <template><%== $content_template %></template>
+</moai-auto-list>
