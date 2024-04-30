@@ -4,5 +4,9 @@
     "@mojolicious/server-starter": "^2.0.0",
     "playwright": "^1.17.1",
     "tap": "^15.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.43.1",
+    "@yancyjs/tap-playwright": "^0.0.5"
   }
 }
