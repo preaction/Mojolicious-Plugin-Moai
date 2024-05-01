@@ -2,16 +2,24 @@
     my $stash_class = stash( 'class' ) // {};
     my %classes = (
         wrapper => $stash_class->{ wrapper },
-        table => join( ' ', 'table', $stash_class->{ table } ),
+        table => join( ' ', 'table', $stash_class->{ table } // '' ),
         thead => $stash_class->{ thead } // '',
     );
+    my $template_item = {
+      map { $_ => ":$_" } keys %{ @{ stash('items') }[0] // {} }
+    };
 %>
 <% if ( $classes{wrapper} ) { %><div class="<%= $classes{wrapper} %>"><% } %>
 <table class="table <%= $classes{table} %>" id="<%= stash( 'id' ) %>">
     <thead class="<%= $classes{thead} %>">
         <tr>
             % for my $column ( @$columns ) {
-                <th scope="col" class="<%= $column->{class}{col} // '' %>">
+                <th scope="col" class="<%= $column->{class}{col} // '' %>"
+                  data-key="<%= $column->{key} %>"
+                  <% if ( my $route = $column->{link_to} ) { %>
+                  data-href="<%= url_for( $route, $template_item ) %>"
+                  <% } %>
+                >
                     <%= $column->{title} %>
                 </th>
             % }

@@ -1,0 +1,296 @@
+<%
+  # Define the "route" stash to change what the API URL is
+  my $route = stash( 'route' ) || current_route;
+  my $url = url_with( $route, format => 'json' )->to_abs;
+%>
+<script>
+if (!window.moaiDefined || !window.moaiDefined['pager']) {
+  class MoaiPager extends HTMLElement {
+    static get observedAttributes() {
+      return [ 'page', 'total' ];
+    }
+
+    page = 1
+    total = 1
+
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      this.page = 1;
+      this.addEventListener('click', this.handleClick.bind(this));
+    }
+
+    disconnectedCallback() {
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      switch ( name ) {
+        case 'page':
+          console.log(`page newValue`, newValue);
+          this.page = newValue
+          if (oldValue) {
+            // XXX: Navigate to the new page
+          }
+          break;
+        case 'total':
+          console.log(`total newValue`, newValue);
+          this.total = newValue
+          if (oldValue) {
+            // Changing how many pages there are
+            // XXX
+          }
+          break;
+      }
+    }
+
+    handleClick(event) {
+      const el = event.target;
+      if ( el.tagName === 'A' ) {
+        event.preventDefault();
+        const href = new URL(el.getAttribute('href'), window.location);
+        const detail = {
+          oldPage: this.page,
+          newPage: href.searchParams.get('$page'),
+        }
+        const pagerEvent = new CustomEvent("page", { detail, bubbles: true });
+        console.log(`dispatchEvent`, pagerEvent);
+        if (this.dispatchEvent(pagerEvent)) {
+          // Not cancelled, update the pager elements
+        }
+      }
+    }
+
+  }
+
+  window.customElements.define('moai-pager', MoaiPager);
+  if (!window.moaiDefined) {
+    window.moaiDefined = {};
+  }
+  window.moaiDefined['pager'] = true;
+}
+
+if (!window.moaiDefined || !window.moaiDefined['data-table']) {
+  class MoaiDataTable extends HTMLElement {
+    static get observedAttributes() {
+      return [ 'route', 'remote' ];
+    }
+
+    limit = 0
+    page = 1
+    route = null
+    remote = null
+
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      this.page = 1;
+      this.observer = new MutationObserver(this.onMutation.bind(this));
+      this.observer.observe(this, { childList: true });
+      this.addEventListener('click', this.handleClick.bind(this));
+      this.addEventListener('page', this.handlePage.bind(this));
+      window.addEventListener("popstate", this.handlePopState.bind(this));
+    }
+
+    disconnectedCallback() {
+      this.observer.disconnect();
+      window.removeEventListener("popstate");
+      this.removeEventListener('click');
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      switch ( name ) {
+        case 'route':
+          console.log(`route newValue`, newValue);
+          this.route = new URL(newValue);
+          break;
+        case 'remote':
+          console.log(`remote newValue`, newValue);
+          this.remote = new URL(newValue);
+          if (!oldValue) {
+            // Initial value, replace history state
+            window.history.replaceState({ remote: newValue }, "", window.location);
+          }
+          else {
+            // Changing which dist we're looking at, so fetch the new
+            // data.
+          }
+          break;
+      }
+    }
+
+    async handlePage(event) {
+      this.page = event.detail.newPage;
+      this.route.searchParams.set('$page', this.page);
+      this.remote.searchParams.set('$page', this.page);
+
+      console.log('this.remote', this.remote.toString())
+      const res = await fetch(this.remote).then(res => res.json());
+
+      console.log('history.pushState(', res, ', ', this.route.toString(), ')')
+      window.history.pushState(res, "", this.route.toString());
+
+      this.displayItems(res);
+    }
+
+    async handlePopState(event) {
+      if (event.state) {
+        event.preventDefault();
+        if (event.state.items) {
+          this.displayItems(event.state);
+          return;
+        }
+        console.log(`fetching `, event.state.remote);
+        const res = await fetch(event.state.remote).then(res => res.json() );
+        window.history.replaceState(res, "", window.location);
+        console.log(`Got `, JSON.stringify(res));
+        this.displayItems(res);
+      }
+    }
+
+    onMutation(mutations) {
+      for ( const m of mutations ) {
+        if (!m.addedNodes || !m.addedNodes.length) {
+          continue;
+        }
+        for ( const node of m.addedNodes ) {
+          if ( node.nodeName === 'FORM' ) {
+            // Add event handlers
+            node.addEventListener('submit', this.submitFilter.bind(this))
+          }
+        }
+      }
+    }
+
+    async handleClick(event) {
+      console.log('click')
+      if ( event.target.matches('thead th') ) {
+        console.log('click table header')
+      }
+    }
+
+    async submitFilter(event) {
+      event.preventDefault();
+
+      for ( const input of this.querySelector('form').elements ) {
+        if ( input instanceof HTMLInputElement ) {
+          this.remote.searchParams.set(input.name, input.value)
+          this.route.searchParams.set(input.name, input.value)
+        }
+        else if (input instanceof HTMLSelectElement) {
+          for ( const opt of input.selectedOptions ) {
+            if ( opt.value ) {
+              this.remote.searchParams.set(input.name, opt.value)
+              this.route.searchParams.set(input.name, opt.value)
+            }
+          }
+        }
+      }
+
+      this.page = 1;
+      console.log('this.remote', this.remote.toString())
+      const res = await fetch(this.remote).then(res => res.json());
+
+      console.log('history.pushState(', res, ', ', this.route.toString(), ')')
+      window.history.pushState(res, "", this.route.toString());
+
+      this.displayItems(res);
+    }
+
+    displayItems(res) {
+      console.log('displayItems', JSON.stringify(res));
+      const tbody = this.querySelector('[data-table-wrapper] tbody')
+      const columns = this.querySelectorAll('[data-table-wrapper] thead th');
+      let rowIndex = 0;
+      for ( const item of res.items ) {
+        let row = tbody.children[rowIndex]
+        if (!row) {
+          row = document.createElement('tr')
+          tbody.appendChild(row);
+          for ( const col of columns ) {
+            row.appendChild( document.createElement('td') );
+          }
+        }
+
+        if (!item) {
+          tbody.removeChild(row);
+          continue;
+        }
+
+        // Fill in the row
+        for ( const [columnIndex, columnElem] of columns.entries() ) {
+          const cell = row.children[columnIndex];
+          // XXX: handle link_to
+          cell.replaceChildren(item[columnElem.dataset.key]);
+        }
+
+        rowIndex++;
+      }
+      // Delete all other table rows
+      for (let i = rowIndex; i < tbody.children.length; i++ ) {
+        // XXX: We don't need to destroy it, we can hold on to it and
+        // re-attach it later.
+        tbody.removeChild(tbody.children[i]);
+      }
+    }
+
+    readTable() {
+      const node = this.querySelector('[data-table-wrapper]');
+
+      // Read column information
+      for ( const col of node.querySelectorAll('table thead th') ) {
+        this.columns.push({
+          key: col.dataset.key,
+          href: col.dataset.href,
+        });
+      }
+
+      this.limit = node.querySelectorAll('tbody tr').length;
+
+      // Current filter and pagination information is in the
+      // [data-table-wrapper]
+    }
+  }
+
+  window.customElements.define('moai-data-table', MoaiDataTable);
+  if (!window.moaiDefined) {
+    window.moaiDefined = {};
+  }
+  window.moaiDefined['data-table'] = true;
+}
+</script>
+<% if (stash 'javascript') { %>
+<moai-data-table route="<%= url_for(current_route)->to_abs %>" remote="<%= $url %>">
+<% } %>
+  <form>
+    <% for my $col ( grep { $_->{filter} } @$columns ) { %>
+      % my $current_value = param($col->{key}) // '';
+      % if ( ref $col->{filter} eq 'HASH' && $col->{filter}{enum} ) {
+        <select name="<%= $col->{key} %>">
+          <option></option>
+          % for my $val ( @{ $col->{filter}{enum} } ) {
+            <option value="<%= $val %>"
+              <%= $current_value eq $val ? 'selected' : '' %>
+            ><%= $val %></option>
+          % }
+        </select>
+      % } elsif ( $col->{filter} eq 'string' ) {
+        <input type="text" name="<%= $col->{key} %>" value="<%= $current_value %>">
+      % } else {
+        <%= $col->{title} %>: Unknown filter type <%= dumper $col->{filter} %>
+      % }
+    <% } %>
+    <button>Submit</button>
+  </form>
+  <div data-table-wrapper>
+    %= include 'moai/table'
+  </div>
+  <moai-pager page="<%= param('$page') // 1 %>" total="<%= stash('total_pages') %>">
+    %= include 'moai/pager'
+  </moai-pager>
+<% if (stash 'javascript') { %>
+</moai-data-table>
+<% } %>
